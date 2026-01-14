@@ -4,11 +4,14 @@ import BookingsTable from "../features/bookings/BookingsTable";
 import BookingItem from "../features/bookings/BookingItem";
 import BookingTableHeader from "../features/bookings/BookingTableHeader";
 import BookingSortFilter from "../features/bookings/BookingSortFilter";
+import Pagination from "../ui/Pagination";
+import NodataToShow from "../ui/NodataToShow";
 
 export default function Bookings() {
-  const { bookingsData, isGettingBookings } = useGetBookings();
+  const { bookingsData, count, isGettingBookings } = useGetBookings();
 
   if (isGettingBookings) return <Loader />;
+  if (!bookingsData.length) return <NodataToShow resourceName={"bookings"} />;
   return (
     <div className="mt-4 overflow-x-hidden">
       <div className="flex justify-between items-center">
@@ -24,6 +27,9 @@ export default function Bookings() {
           )}
         />
       </section>
+      <footer className="flex justify-center items-center">
+        <Pagination count={count} />
+      </footer>
     </div>
   );
 }
