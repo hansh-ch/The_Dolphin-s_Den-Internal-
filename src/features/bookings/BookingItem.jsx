@@ -1,8 +1,10 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 import { format, isToday } from "date-fns";
+import { HiEllipsisVertical, HiEye } from "react-icons/hi2";
 import { formatCurrency, formatDistanceFromNow } from "../../utils/helpers";
 
 export default function BookingItem({ booking }) {
+  const navigate = useNavigate();
   const {
     id: bookingId,
     created_at,
@@ -53,7 +55,26 @@ export default function BookingItem({ booking }) {
       <div className="font-[sono] font-semibold">
         {formatCurrency(totalPrice)}
       </div>
-      <div>Actionsss</div>
+      <div className="flex items-center">
+        <div className="dropdown dropdown-left dropdown-center">
+          <div tabIndex={0} role="button" className="btn m-1">
+            <HiEllipsisVertical size={24} />
+          </div>
+          <ul
+            tabIndex="-1"
+            className="dropdown-content menu bg-neutral rounded-box z-1 w-52 p-2 shadow-sm"
+          >
+            <li>
+              <button
+                className="flex gap-1 cursor-pointer"
+                onClick={() => navigate(`/bookings/${bookingId}`)}
+              >
+                <HiEye /> <span>See details</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
     </li>
   );
 }

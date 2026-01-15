@@ -31,3 +31,17 @@ export const getBookings = async ({ filter, sortBy, pageNo }) => {
 
   return { data, count };
 };
+
+export const getBookingById = async (id) => {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*,rooms(*),guests(*)")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    console.log(error);
+    throw new Error("Bookings cannot be fetched");
+  }
+  return data;
+};

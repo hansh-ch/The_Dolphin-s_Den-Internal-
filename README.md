@@ -13,6 +13,7 @@ BACKEND: SUPABASE,
 - Where an employee can see all bookings and its details, checkin and checkout bookings,edit booking details,etc.
 - Employee must be able to filter bookings by unconfirmed,checked-in or checked-out status
 - Employee must be able to sort bookings by date and prices
+- Employee must be able to delte, checkin or checkout booking through actions buttons
 
 **Rooms:**
 
