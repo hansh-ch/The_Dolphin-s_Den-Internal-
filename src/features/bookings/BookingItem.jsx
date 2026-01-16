@@ -1,6 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { format, isToday } from "date-fns";
-import { HiEllipsisVertical, HiEye } from "react-icons/hi2";
+import {
+  HiArrowDownOnSquare,
+  HiArrowUpOnSquare,
+  HiEllipsisVertical,
+  HiEye,
+} from "react-icons/hi2";
 import { formatCurrency, formatDistanceFromNow } from "../../utils/helpers";
 
 export default function BookingItem({ booking }) {
@@ -72,6 +77,28 @@ export default function BookingItem({ booking }) {
                 <HiEye /> <span>See details</span>
               </button>
             </li>
+
+            {status === "unconfirmed" && (
+              <li>
+                <button
+                  className="flex gap-1 cursor-pointer"
+                  // onClick={() => navigate(`/bookings/${bookingId}`)}
+                >
+                  <HiArrowDownOnSquare /> <span>Checkin</span>
+                </button>
+              </li>
+            )}
+            {status === "checked-in" && (
+              <li>
+                <button
+                  className="flex gap-1 cursor-pointer"
+                  // onClick={() => navigate(`/bookings/${bookingId}`)}
+                >
+                  <HiArrowUpOnSquare />
+                  <span>Checkout</span>
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>

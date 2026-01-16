@@ -6,9 +6,11 @@ import Loader from "../../ui/Loader";
 import { HiOutlineCurrencyDollar, HiOutlineHomeModern } from "react-icons/hi2";
 import { format, isToday } from "date-fns";
 import { formatCurrency, formatDistanceFromNow } from "../../utils/helpers";
+import { useMoveBack } from "../../hooks/useMoveBack";
 
 export default function BookingDetail() {
   const { booking, isPending } = useGetBookingById();
+  const navigateBack = useMoveBack();
 
   if (isPending) return <Loader />;
   const {
@@ -44,7 +46,10 @@ export default function BookingDetail() {
             {status}
           </span>
         </div>
-        <button className="btn btn-ghost btn-sm flex items-center">
+        <button
+          className="btn btn-ghost btn-sm flex items-center"
+          onClick={navigateBack}
+        >
           &larr; Back
         </button>
       </article>
@@ -81,7 +86,7 @@ export default function BookingDetail() {
           </span>
         </div>
         <div
-          className={`flex items-center justify-between rounded-sm  mt-6 px-4 py-8 ${
+          className={`flex items-center justify-between rounded-sm  mt-6 px-4 py-6 ${
             isPaid ? "bg-secondary/50" : "bg-secondary/80"
           }`}
         >
@@ -100,10 +105,14 @@ export default function BookingDetail() {
           </p>
           <p>{isPaid ? "Paid" : "Will pay at property"}</p>
         </div>
-        <footer className="text-base-content">
+        <footer className="text-base-content flex justify-end mt-4">
           <p>Booked {format(new Date(created_at), "EEE, MMM dd yyyy, p")}</p>
         </footer>
       </section>
+
+      <div className="flex justify-end items-center mt-6">
+        <button className="btn btn-accent">Back</button>
+      </div>
     </div>
   );
 }

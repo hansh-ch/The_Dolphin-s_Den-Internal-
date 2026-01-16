@@ -7,6 +7,7 @@ export function useGetBookingById() {
   const { data: booking, isPending } = useQuery({
     queryKey: ["booking"],
     queryFn: () => getBookingById(bookingId),
+    retry: false,
   });
   return { booking, isPending };
 }
