@@ -82,7 +82,7 @@ export default function BookingItem({ booking }) {
               <li>
                 <button
                   className="flex gap-1 cursor-pointer"
-                  // onClick={() => navigate(`/bookings/${bookingId}`)}
+                  onClick={() => navigate(`/checkin/${bookingId}`)}
                 >
                   <HiArrowDownOnSquare /> <span>Checkin</span>
                 </button>
