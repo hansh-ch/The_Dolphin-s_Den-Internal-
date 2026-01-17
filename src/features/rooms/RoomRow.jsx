@@ -90,7 +90,7 @@ export default function RoomRow({ room }) {
           <ConfirmDelete
             onCancel={() => setIsDeleteModalOpen(false)}
             onConfirm={() => deleteRoomAPI(id)}
-            roomName={name}
+            resourceName={name}
           />
         </Modal>
       )}

@@ -60,3 +60,13 @@ export const updateBooking = async (id, obj) => {
   }
   return data;
 };
+
+export const deleteBookingApi = async (id) => {
+  const { data, error } = await supabase.from("bookings").delete().eq("id", id);
+
+  if (error) {
+    console.log(error);
+    throw new Error("Could not delete booking");
+  }
+  return data;
+};

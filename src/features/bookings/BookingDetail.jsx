@@ -1,18 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { statusStyle } from "../../utils/constant";
 import { useGetBookingById } from "./useGetBookingById";
 import Loader from "../../ui/Loader";
 import { HiOutlineCurrencyDollar, HiOutlineHomeModern } from "react-icons/hi2";
-import { format, isToday } from "date-fns";
-import { formatCurrency, formatDistanceFromNow } from "../../utils/helpers";
+
 import { useMoveBack } from "../../hooks/useMoveBack";
 import BookingDataBox from "./BookingDataBox";
 import { useCheckout } from "../check-in-out/useCheckout";
+import Modal from "../../ui/Modal";
+
+import ConfirmDelete from "../../ui/ConfirmDelete";
+import { useDeleteBooking } from "./useDeleteBooking";
 
 export default function BookingDetail() {
   const { booking, isPending } = useGetBookingById();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { checkoutBooking, isCheckingOut } = useCheckout();
+  const { isDeleting, deleteBooking } = useDeleteBooking();
+
   const navigateBack = useMoveBack();
 
   if (isPending) return <Loader />;
@@ -42,6 +48,12 @@ export default function BookingDetail() {
       <BookingDataBox booking={booking} />
 
       <div className="flex justify-end items-center gap-5 mt-6">
+        <button
+          className="btn btn-error "
+          onClick={() => setIsDeleteModalOpen(true)}
+        >
+          Delete
+        </button>
         {status === "checked-in" && (
           <button
             className="btn btn-primary "
@@ -55,6 +67,16 @@ export default function BookingDetail() {
           Back
         </button>
       </div>
+
+      {isDeleteModalOpen && (
+        <Modal onClose={() => setIsDeleteModalOpen(false)}>
+          <ConfirmDelete
+            onCancel={() => setIsDeleteModalOpen(false)}
+            onConfirm={() => deleteBooking(bookingId)}
+            resourceName="this booking"
+          />
+        </Modal>
+      )}
     </div>
   );
 }

@@ -1,6 +1,10 @@
 import React from "react";
 
-export default function ConfirmDelete({ onCancel, onConfirm, roomName }) {
+export default function ConfirmDelete({
+  onCancel,
+  onConfirm,
+  resourceName = "",
+}) {
   function handleConfirm() {
     onConfirm();
     onCancel();
@@ -8,10 +12,10 @@ export default function ConfirmDelete({ onCancel, onConfirm, roomName }) {
   return (
     <div className=" bg-info/80 w-md mx-auto shadow-2xl flex justify-center items-center flex-col p-6 mt-6 rounded-md">
       <div className="text-center">
-        <h3 className="text-center text-xl mb-2">Delete {roomName}</h3>
+        <h3 className="text-center text-xl mb-2">Delete {resourceName}</h3>
         <p>
-          Are you sure you want to delete {roomName} permanently ? This action
-          cannot be undone
+          Are you sure you want to delete {resourceName} permanently ? This
+          action cannot be undone
         </p>
       </div>
       <div className="flex items-center gap-4 mt-6">

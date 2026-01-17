@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format, isToday } from "date-fns";
 import {
@@ -5,13 +6,23 @@ import {
   HiArrowUpOnSquare,
   HiEllipsisVertical,
   HiEye,
+  HiTrash,
 } from "react-icons/hi2";
 import { formatCurrency, formatDistanceFromNow } from "../../utils/helpers";
 import { useCheckout } from "../check-in-out/useCheckout";
+import Modal from "../../ui/Modal";
+import ConfirmDelete from "../../ui/ConfirmDelete";
+import { useDeleteBooking } from "./useDeleteBooking";
+import { useOutsideClick } from "../../hooks/useOutside";
 
 export default function BookingItem({ booking }) {
-  const navigate = useNavigate();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { checkoutBooking, isCheckingOut } = useCheckout();
+  const { isDeleting, deleteBooking } = useDeleteBooking();
+
+  const navigate = useNavigate();
+  const ref = useOutsideClick(() => setIsDropdownOpen(false));
   const {
     id: bookingId,
     created_at,
@@ -35,6 +46,7 @@ export default function BookingItem({ booking }) {
   function handleCheckout() {
     checkoutBooking(bookingId);
   }
+
   return (
     <li className="w-full grid grid-cols-[0.6fr_2fr_2.4fr_1.4fr_1fr_3.6rem] gap-6 items-center py-6 px-3 border-b border-b-accent-content text-center">
       <div className="font-semibold font-[sono]">{roomName}</div>
@@ -65,14 +77,19 @@ export default function BookingItem({ booking }) {
         {formatCurrency(totalPrice)}
       </div>
       <div className="flex items-center">
-        <div className="dropdown dropdown-left dropdown-center">
-          <div tabIndex={0} role="button" className="btn m-1">
-            <HiEllipsisVertical size={24} />
-          </div>
-          <ul
-            tabIndex="-1"
-            className="dropdown-content menu bg-neutral rounded-box z-1 w-52 p-2 shadow-sm"
+        <div
+          ref={ref}
+          className={`dropdown dropdown-left dropdown-center ${
+            isDropdownOpen ? "dropdown-open" : "dropdown-close"
+          }`}
+        >
+          <button
+            className="btn m-1"
+            onClick={() => setIsDropdownOpen((p) => !p)}
           >
+            <HiEllipsisVertical size={24} />
+          </button>
+          <ul className="dropdown-content menu bg-neutral rounded-box z-1 w-52 p-2 shadow-sm">
             <li>
               <button
                 className="flex gap-1 cursor-pointer"
@@ -104,9 +121,31 @@ export default function BookingItem({ booking }) {
                 </button>
               </li>
             )}
+            <li>
+              <button
+                className="flex gap-1 cursor-pointer disabled:opacity-75"
+                onClick={() => {
+                  setIsDeleteModalOpen(true);
+                  setIsDropdownOpen(false);
+                }}
+              >
+                <HiTrash />
+                <span>Delete</span>
+              </button>
+            </li>
           </ul>
         </div>
       </div>
+
+      {isDeleteModalOpen && (
+        <Modal onClose={() => setIsDeleteModalOpen(false)}>
+          <ConfirmDelete
+            onCancel={() => setIsDeleteModalOpen(false)}
+            onConfirm={() => deleteBooking(bookingId)}
+            resourceName="this booking"
+          />
+        </Modal>
+      )}
     </li>
   );
 }
