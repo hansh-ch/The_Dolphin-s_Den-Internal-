@@ -14,6 +14,7 @@
 - Employee must be able to filter bookings by unconfirmed,checked-in or checked-out status
 - Employee must be able to sort bookings by date and prices
 - Employee must be able to delete, checkin or checkout booking through actions buttons
+- If user has paid , but forgot to add breakfast , then emplyee must be able to add breakfast before checking in
 
   **Rooms:**
 

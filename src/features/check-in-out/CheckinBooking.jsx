@@ -4,12 +4,20 @@ import Loader from "../../ui/Loader";
 import BookingDataBox from "../bookings/BookingDataBox";
 import { useMoveBack } from "../../hooks/useMoveBack";
 import { useCheckin } from "./useCheckin";
+import { useGetSettings } from "../settings/useGetSettings";
+import { formatCurrency } from "../../utils/helpers";
 
 export default function CheckinBooking() {
   const [confirmPaid, setConfirmPaid] = useState(false);
+  const [addBreakfast, setAddBreakfast] = useState(false);
+
+  // hooks that are connected to backend
   const { booking, isPending } = useGetBookingById();
   const { checkinBooking, isCheckingIn } = useCheckin();
+  const { settingsData, isFetchingSettings } = useGetSettings();
+
   const navigateBack = useMoveBack();
+
   const isPaid = booking?.isPaid ?? false;
 
   useEffect(() => {
@@ -18,11 +26,30 @@ export default function CheckinBooking() {
 
   function handleCheckin() {
     if (!confirmPaid) return;
-    checkinBooking(bookingId);
+    if (addBreakfast) {
+      const breakfast = {
+        hasBreakfast: true,
+        extrasPrice: optionalBreakfastPrice,
+        totalPrice: totalPrice + optionalBreakfastPrice,
+      };
+      checkinBooking({ bookingId, breakfast });
+    } else {
+      checkinBooking({ bookingId, breakfast: {} });
+    }
   }
 
-  if (isPending) return <Loader />;
-  const { id: bookingId, guests } = booking;
+  if (isPending || isFetchingSettings) return <Loader />;
+  const {
+    id: bookingId,
+    guests,
+    numNights,
+    numGuests,
+    hasBreakfast,
+    totalPrice,
+  } = booking;
+  const optionalBreakfastPrice =
+    settingsData.breakfastPrice * numNights * numGuests;
+  console.log(optionalBreakfastPrice);
   return (
     <div>
       <article className="flex justify-between items-center p-2">
@@ -39,9 +66,9 @@ export default function CheckinBooking() {
         </button>
       </article>
       <BookingDataBox booking={booking} />
-      {/*  */}
-      <div className="space-y-3 mt-6 p-2">
-        <ul className="px-4 py-2">
+      {/* Checkin requirements */}
+      <div className=" mt-6 p-2">
+        <ul className="px-4 py-2 space-y-3">
           <li className="flex items-center gap-4">
             <input
               type="checkbox"
@@ -53,8 +80,30 @@ export default function CheckinBooking() {
             />
             <span>
               I confirm that {guests.fullName} has paid the total amount{" "}
+              {!addBreakfast
+                ? formatCurrency(totalPrice)
+                : `(${formatCurrency(totalPrice)} + ${formatCurrency(
+                    optionalBreakfastPrice
+                  )})`}
             </span>
           </li>
+          {!hasBreakfast && (
+            <li className="flex items-center gap-4">
+              <input
+                type="checkbox"
+                id="breakfast"
+                checked={addBreakfast}
+                onChange={() => {
+                  setAddBreakfast((add) => !add);
+                  setConfirmPaid(false);
+                }}
+                className="checkbox "
+              />
+              <span id="breakfast">
+                Want to add breakfast for {guests.fullName}
+              </span>
+            </li>
+          )}
         </ul>
       </div>
 
