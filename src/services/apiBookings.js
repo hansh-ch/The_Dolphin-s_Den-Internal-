@@ -17,7 +17,7 @@ export const getBookings = async ({ filter, sortBy, pageNo }) => {
 
   // PAGE
   if (pageNo) {
-    const from = (pageNo - 1) * (PAGE_SIZE - 1);
+    const from = (pageNo - 1) * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
     query = query.range(from, to);
   }
@@ -47,7 +47,6 @@ export const getBookingById = async (id) => {
 };
 
 export const updateBooking = async (id, obj) => {
-  console.log(id, obj);
   const { data, error } = await supabase
     .from("bookings")
     .update(obj)

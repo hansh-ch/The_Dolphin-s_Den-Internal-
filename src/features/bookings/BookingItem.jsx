@@ -7,9 +7,11 @@ import {
   HiEye,
 } from "react-icons/hi2";
 import { formatCurrency, formatDistanceFromNow } from "../../utils/helpers";
+import { useCheckout } from "../check-in-out/useCheckout";
 
 export default function BookingItem({ booking }) {
   const navigate = useNavigate();
+  const { checkoutBooking, isCheckingOut } = useCheckout();
   const {
     id: bookingId,
     created_at,
@@ -30,7 +32,9 @@ export default function BookingItem({ booking }) {
     "checked-out": "bg-warning/50 ",
     "checked-in": "bg-success",
   };
-
+  function handleCheckout() {
+    checkoutBooking(bookingId);
+  }
   return (
     <li className="w-full grid grid-cols-[0.6fr_2fr_2.4fr_1.4fr_1fr_3.6rem] gap-6 items-center py-6 px-3 border-b border-b-accent-content text-center">
       <div className="font-semibold font-[sono]">{roomName}</div>
@@ -81,7 +85,7 @@ export default function BookingItem({ booking }) {
             {status === "unconfirmed" && (
               <li>
                 <button
-                  className="flex gap-1 cursor-pointer"
+                  className="flex gap-1 cursor-pointer disabled:opacity-90"
                   onClick={() => navigate(`/checkin/${bookingId}`)}
                 >
                   <HiArrowDownOnSquare /> <span>Checkin</span>
@@ -91,8 +95,9 @@ export default function BookingItem({ booking }) {
             {status === "checked-in" && (
               <li>
                 <button
-                  className="flex gap-1 cursor-pointer"
-                  // onClick={() => navigate(`/bookings/${bookingId}`)}
+                  className="flex gap-1 cursor-pointer disabled:opacity-75"
+                  onClick={handleCheckout}
+                  disabled={isCheckingOut}
                 >
                   <HiArrowUpOnSquare />
                   <span>Checkout</span>

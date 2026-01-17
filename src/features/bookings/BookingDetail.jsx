@@ -8,9 +8,11 @@ import { format, isToday } from "date-fns";
 import { formatCurrency, formatDistanceFromNow } from "../../utils/helpers";
 import { useMoveBack } from "../../hooks/useMoveBack";
 import BookingDataBox from "./BookingDataBox";
+import { useCheckout } from "../check-in-out/useCheckout";
 
 export default function BookingDetail() {
   const { booking, isPending } = useGetBookingById();
+  const { checkoutBooking, isCheckingOut } = useCheckout();
   const navigateBack = useMoveBack();
 
   if (isPending) return <Loader />;
@@ -39,7 +41,16 @@ export default function BookingDetail() {
 
       <BookingDataBox booking={booking} />
 
-      <div className="flex justify-end items-center mt-6">
+      <div className="flex justify-end items-center gap-5 mt-6">
+        {status === "checked-in" && (
+          <button
+            className="btn btn-primary "
+            onClick={() => checkoutBooking(bookingId)}
+            disabled={isCheckingOut}
+          >
+            Checkout
+          </button>
+        )}
         <button className="btn btn-accent" onClick={navigateBack}>
           Back
         </button>
