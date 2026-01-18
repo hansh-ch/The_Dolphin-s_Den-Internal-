@@ -12,6 +12,7 @@ import Modal from "../../ui/Modal";
 
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import { useDeleteBooking } from "./useDeleteBooking";
+import { useNavigate } from "react-router-dom";
 
 export default function BookingDetail() {
   const { booking, isPending } = useGetBookingById();
@@ -20,6 +21,16 @@ export default function BookingDetail() {
   const { isDeleting, deleteBooking } = useDeleteBooking();
 
   const navigateBack = useMoveBack();
+  const navigate = useNavigate();
+
+  //Handling delete logic
+  function handleConfirmDelete() {
+    deleteBooking(bookingId, {
+      onSettled: () => {
+        navigate("/bookings");
+      },
+    });
+  }
 
   if (isPending) return <Loader />;
   const { id: bookingId, status } = booking;
@@ -72,7 +83,7 @@ export default function BookingDetail() {
         <Modal onClose={() => setIsDeleteModalOpen(false)}>
           <ConfirmDelete
             onCancel={() => setIsDeleteModalOpen(false)}
-            onConfirm={() => deleteBooking(bookingId)}
+            onConfirm={handleConfirmDelete}
             resourceName="this booking"
           />
         </Modal>
