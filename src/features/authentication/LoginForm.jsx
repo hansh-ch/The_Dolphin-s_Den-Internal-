@@ -11,12 +11,20 @@ export default function LoginForm() {
   //
   function handleLogin() {
     if (!email || !password) return;
-    console.log(email, password);
+    loginUser(
+      { email, password },
+      {
+        onSettled: () => {
+          setEmail("");
+          setPassword("");
+        },
+      },
+    );
   }
 
-  async function guestLogin() {
+  function guestLogin() {
     const body = { email: "lucy@example.com", password: "Lucy@123" };
-    await loginUser(body);
+    loginUser(body);
   }
 
   return (
@@ -41,7 +49,7 @@ export default function LoginForm() {
             className="input"
             placeholder="Password"
             value={password}
-            setPassword={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             disabled={isLogging}
           />
           <div>
