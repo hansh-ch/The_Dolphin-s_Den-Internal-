@@ -24,3 +24,11 @@ export async function getCurrentUser() {
 
   return data?.user;
 }
+
+export async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.log(error);
+    throw new Error("Logout failed");
+  }
+}
